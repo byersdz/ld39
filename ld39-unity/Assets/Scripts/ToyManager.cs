@@ -18,11 +18,23 @@ public class ToyManager : MonoBehaviour
 	private bool right = false;
 	private bool lastRight = false;
 
+	private State cachedStateFromDeath;
+	private ToyCamera.State cachedCameraStateFromDeath;
+
+	public static ToyManager sharedInstance;
+
 	public enum State
 	{
 		SelectingToy,
 		ControllingToy,
-		ZoomedOut
+		ZoomedOut,
+		DeathAnimation
+	}
+
+	void Awake()
+	{
+		sharedInstance = null;
+		sharedInstance = this;
 	}
 
 	// Use this for initialization
@@ -38,6 +50,34 @@ public class ToyManager : MonoBehaviour
 		toyCamera.currentToyTarget = toys[selectedToyIndex];
 
 		state = State.SelectingToy;
+
+		SelectToy( 0 );
+	}
+
+	public void BeginDeathAnimation()
+	{
+		cachedStateFromDeath = state;
+		cachedCameraStateFromDeath = toyCamera.state;
+
+		state = State.DeathAnimation;
+		toyCamera.state = ToyCamera.State.DeathAnimation;
+
+		foreach( Toy toy in toys )
+		{
+			toy.isPaused = true;
+		}
+	}
+
+	public void EndDeathAnimation()
+	{
+		state = cachedStateFromDeath;
+		toyCamera.state = cachedCameraStateFromDeath;
+
+		foreach( Toy toy in toys )
+		{
+			toy.isPaused = false;
+		}
+
 	}
 	
 	// Update is called once per frame
@@ -74,6 +114,18 @@ public class ToyManager : MonoBehaviour
 			{
 				toys[selectedToyIndex].WindUp();
 			}
+			else
+			{
+				if ( left && !lastLeft )
+				{
+					SelectToy( selectedToyIndex - 1 );
+				}
+				else if ( right && !lastRight )
+				{
+					SelectToy( selectedToyIndex + 1 );
+				}
+			}
+
 
 		}
 		else if ( state == State.SelectingToy )
@@ -88,6 +140,7 @@ public class ToyManager : MonoBehaviour
 				}
 
 				toys[selectedToyIndex].state = Toy.State.Controlled;
+				toys[selectedToyIndex].selectionObject.SetActive( false );
 
 				toyCamera.state = ToyCamera.State.ToyIsControlled;
 			}
@@ -124,8 +177,10 @@ public class ToyManager : MonoBehaviour
 				}
 
 				toys[selectedToyIndex].state = Toy.State.Selected;
+				toys[selectedToyIndex].selectionObject.SetActive( true );
 
 				toyCamera.state = ToyCamera.State.ToyIsSelected;
+
 
 			}
 		}
@@ -150,9 +205,11 @@ public class ToyManager : MonoBehaviour
 		foreach( Toy toy in toys )
 		{
 			toy.state = Toy.State.Waiting;
+			toy.selectionObject.SetActive( false );
 		}
 
 		toys[selectedToyIndex].state = Toy.State.Selected;
+		toys[selectedToyIndex].selectionObject.SetActive( true );
 
 	}
 }
