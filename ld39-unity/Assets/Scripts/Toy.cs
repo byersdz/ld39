@@ -33,6 +33,9 @@ public class Toy : MonoBehaviour
 
 	protected bool isAttacking = false;
 
+	protected float minVerticalSpeed = -20;
+	protected float verticalSpeed = 0;
+
 	public enum State
 	{
 		Waiting,
@@ -67,6 +70,17 @@ public class Toy : MonoBehaviour
 
 		Vector3 moveDirection = cameraForward * vertical + cameraRight * horizontal;
 
+		verticalSpeed -= Time.deltaTime * 10;
+		if ( verticalSpeed < minVerticalSpeed )
+		{
+			verticalSpeed = minVerticalSpeed;
+		}
+
+		if ( controller.isGrounded )
+		{
+			verticalSpeed = 0;
+		}
+
 		if ( isNPC )
 		{
 			moveDirection = new Vector3( npcHorizontal, 0, npcVertical );
@@ -96,7 +110,11 @@ public class Toy : MonoBehaviour
 					Vector3 initialPosition = transform.position;
 					initialPosition.y = 0;
 
-					controller.Move( moveDirection * Time.deltaTime * walkSpeed );
+					Vector3 moveAmount = moveDirection;
+					moveAmount.y = verticalSpeed;
+					moveAmount = moveAmount * Time.deltaTime * walkSpeed;
+
+					controller.Move( moveAmount );
 
 					Vector3 newPosition = transform.position;
 					newPosition.y = 0;
