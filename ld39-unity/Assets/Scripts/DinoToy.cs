@@ -8,6 +8,9 @@ public class DinoToy : Toy
 
 	public ParticleSystem breathParticles;
 
+	public Material enemyMaterial;
+	public Renderer modelRenderer;
+
 	private bool isBreathing = false;
 	private bool lastIsBreathing = false;
 
@@ -44,6 +47,22 @@ public class DinoToy : Toy
 			}
 
 			knob.power -= 0.25f * Time.deltaTime;
+
+			if ( !isNPC )
+			{
+				EnemyToyManager.availableWindingPower += 0.25f * Time.deltaTime;
+			}
+		}
+
+		if ( isNPC )
+		{
+			Vector3 moveDirection = new Vector3( npcHorizontal, 0, npcVertical );
+
+			if ( moveDirection.magnitude > 0.1f )
+			{
+				modelObject.transform.rotation = Quaternion.LookRotation( moveDirection );
+			}
+
 		}
 
 
@@ -64,6 +83,12 @@ public class DinoToy : Toy
 
 		lastIsBreathing = isBreathing;
 		isBreathing = false;
+	}
+
+	public override void SetAsEnemy()
+	{
+		base.SetAsEnemy();
+		modelRenderer.material = enemyMaterial;
 	}
 
 }

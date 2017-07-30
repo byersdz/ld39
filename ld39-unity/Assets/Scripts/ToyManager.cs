@@ -38,18 +38,19 @@ public class ToyManager : MonoBehaviour
 	}
 
 	// Use this for initialization
-	void Start () 
+	public void Initialize () 
 	{
 		foreach ( Toy toy in toys )
 		{
 			toy.state = Toy.State.Waiting;
+			toy.activeCamera = toyCamera.myCamera;
 		}
 
 		toys[selectedToyIndex].state = Toy.State.Selected;
-		toyCamera.state = ToyCamera.State.ToyIsSelected;
+		toyCamera.state = ToyCamera.State.ZoomedOut;
 		toyCamera.currentToyTarget = toys[selectedToyIndex];
 
-		state = State.SelectingToy;
+		state = State.ZoomedOut;
 
 		SelectToy( 0 );
 	}
@@ -110,10 +111,6 @@ public class ToyManager : MonoBehaviour
 
 				toyCamera.state = ToyCamera.State.ToyIsSelected;
 			}
-			else if ( Input.GetButton( "Attack" ) )
-			{
-				toys[selectedToyIndex].WindUp();
-			}
 			else
 			{
 				if ( left && !lastLeft )
@@ -139,22 +136,22 @@ public class ToyManager : MonoBehaviour
 					toy.state = Toy.State.OtherIsControlled;
 				}
 
+				toys[selectedToyIndex].ResetControlledCameraTarget();
 				toys[selectedToyIndex].state = Toy.State.Controlled;
 				toys[selectedToyIndex].selectionObject.SetActive( false );
 
 				toyCamera.state = ToyCamera.State.ToyIsControlled;
+
 			}
 			else if ( Input.GetButtonDown( "Back" ) )
 			{
 				state = State.ZoomedOut;
 				toyCamera.state = ToyCamera.State.ZoomedOut;
 			}
-			else if ( Input.GetButton( "Attack" ) )
-			{
-				toys[selectedToyIndex].WindUp();
-			}
 			else
 			{
+				toys[selectedToyIndex].WindUp();
+
 				if ( left && !lastLeft )
 				{
 					SelectToy( selectedToyIndex - 1 );
@@ -211,5 +208,10 @@ public class ToyManager : MonoBehaviour
 		toys[selectedToyIndex].state = Toy.State.Selected;
 		toys[selectedToyIndex].selectionObject.SetActive( true );
 
+	}
+
+	public void ResetSelection()
+	{
+		SelectToy( selectedToyIndex );
 	}
 }

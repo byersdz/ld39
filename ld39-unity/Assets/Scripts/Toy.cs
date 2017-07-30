@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Toy : MonoBehaviour 
+public class Toy : MonoBehaviour, IHittable 
 {
 	public Camera activeCamera;
 	public CharacterController controller;
@@ -13,6 +13,9 @@ public class Toy : MonoBehaviour
 	public float moveDistancePerTurn = 10;
 	public float windUpSpeed = 1;
 	public GameObject selectionObject;
+	public GameObject healthBarPrefab;
+	public Transform healthBarOrigin;
+	public NPCToyController npcController;
 
 
 	public Transform controlledCameraTargetParent;
@@ -27,6 +30,8 @@ public class Toy : MonoBehaviour
 	public float npcVertical;
 	public bool npcAttacking;
 
+	public DeathSequence deathSequence;
+
 	public State state;
 
 	public bool isPaused = false;
@@ -35,6 +40,9 @@ public class Toy : MonoBehaviour
 
 	protected float minVerticalSpeed = -20;
 	protected float verticalSpeed = 0;
+
+	protected HealthBar healthBar;
+	protected bool isDead = false;
 
 	public enum State
 	{
@@ -49,22 +57,42 @@ public class Toy : MonoBehaviour
 
 	protected virtual void CustomStart()
 	{
-		knob.power = 1;
+		knob.power = 1.0f;
+		GameObject instance = Instantiate( healthBarPrefab );
+		instance.transform.parent = healthBarOrigin;
+		instance.transform.localPosition = Vector3.zero;
+		instance.transform.localEulerAngles = Vector3.zero;
+
+		healthBar = instance.GetComponent<HealthBar>();
 	}
 
 	protected virtual void CustomUpdate()
 	{
+		if ( healthBar.damage >= healthBar.hitPoints )
+		{
+			if ( !isDead )
+			{
+				deathSequence.BeginDeathSequence();
+				isDead = true;
+			}
+		}
+
 		float horizontal = Input.GetAxis( "Horizontal" );
 		float vertical = Input.GetAxis( "Vertical" );
 
 		Vector2 smoothedInput = new Vector2( horizontal, vertical );
 		Vector2 rawInput = new Vector2( Input.GetAxisRaw( "Horizontal" ), Input.GetAxisRaw( "Vertical" ) );
 
-		Vector3 cameraForward = activeCamera.transform.forward;
+		Vector3 cameraForward;
+		Vector3 cameraRight;
+		if ( !isNPC )
+		{
+			cameraForward = activeCamera.transform.forward;
+			cameraRight = activeCamera.transform.right;
+		}
 		cameraForward.y = 0;
 		cameraForward.Normalize();
 
-		Vector3 cameraRight = activeCamera.transform.right;
 		cameraRight.y = 0;
 		cameraRight.Normalize();
 
@@ -86,7 +114,7 @@ public class Toy : MonoBehaviour
 			moveDirection = new Vector3( npcHorizontal, 0, npcVertical );
 		}
 
-		if ( state == State.Controlled && !isPaused )
+		if ( state == State.Controlled && !isPaused && !isDead )
 		{
 			isAttacking = Input.GetButton( "Attack" );
 
@@ -122,6 +150,11 @@ public class Toy : MonoBehaviour
 					float distanceMoved = Vector3.Distance( initialPosition, newPosition );
 
 					knob.power -= distanceMoved / moveDistancePerTurn;
+
+					if ( !isNPC )
+					{
+						EnemyToyManager.availableWindingPower += distanceMoved / moveDistancePerTurn;
+					}
 
 					float animationSpeed = Mathf.Clamp( smoothedInput.magnitude, 0, 1 );
 
@@ -169,6 +202,11 @@ public class Toy : MonoBehaviour
 		}
 	}
 
+	public void ResetControlledCameraTarget()
+	{
+		controlledCameraTargetParent.localEulerAngles = new Vector3( 0, modelObject.transform.localEulerAngles.y, 0 );
+	}
+
 	protected virtual void AttackUpdate()
 	{
 
@@ -177,5 +215,33 @@ public class Toy : MonoBehaviour
 	public void WindUp()
 	{
 		knob.power += windUpSpeed * Time.deltaTime;
+
+
 	}
+
+	public virtual void SetAsEnemy()
+	{
+		isNPC = true;
+		selectionObject.SetActive( false );
+		windUpSpeed = 0.1f;
+	}
+
+	public void Hit( HitInfo theHit )
+	{
+		healthBar.damage += theHit.damage;
+	}
+
+	public void RemoveFromGame()
+	{
+		if ( isNPC )
+		{
+			EnemyToyManager.instance.toys.Remove( this );
+		}
+		else
+		{
+			ToyManager.sharedInstance.toys.Remove( this );
+			ToyManager.sharedInstance.ResetSelection();
+		}
+	}
+
 }

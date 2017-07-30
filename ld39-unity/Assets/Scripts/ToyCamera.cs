@@ -6,6 +6,7 @@ public class ToyCamera : MonoBehaviour
 {
 	public State state;
 	public Toy currentToyTarget;
+	public Camera myCamera;
 
 	public static Vector3 deathPosition;
 	public static Vector3 deathLookPosition;
