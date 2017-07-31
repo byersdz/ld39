@@ -11,12 +11,15 @@ public class ToyCamera : MonoBehaviour
 	public static Vector3 deathPosition;
 	public static Vector3 deathLookPosition;
 
+	public static Transform enemyFollowTransform;
+
 	public enum State
 	{
 		ToyIsSelected,
 		ToyIsControlled,
 		ZoomedOut,
-		DeathAnimation
+		DeathAnimation,
+		FollowEnemies
 	}
 
 
@@ -74,6 +77,19 @@ public class ToyCamera : MonoBehaviour
 
 			Vector3 relativePosition = deathLookPosition - deathPosition;
 			transform.rotation = Quaternion.LookRotation( relativePosition );
+		}
+		else if ( state == State.FollowEnemies )
+		{
+			if ( enemyFollowTransform != null )
+			{
+				float lerpAmount = 0.2f;
+
+				Vector3 targetPosition = enemyFollowTransform.position;
+				Vector3 newPosition = Vector3.Lerp( transform.position, targetPosition, lerpAmount );
+				transform.position = newPosition;
+
+				transform.rotation = Quaternion.Lerp( transform.rotation, enemyFollowTransform.rotation, lerpAmount );
+			}
 		}
 	}
 }

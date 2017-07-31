@@ -28,7 +28,8 @@ public class ToyManager : MonoBehaviour
 		SelectingToy,
 		ControllingToy,
 		ZoomedOut,
-		DeathAnimation
+		DeathAnimation,
+		EnemyTurn
 	}
 
 	void Awake()
@@ -105,6 +106,11 @@ public class ToyManager : MonoBehaviour
 
 		if ( state == State.ZoomedOut )
 		{
+			if ( Input.GetButtonDown( "Back" ) )
+			{
+				state = State.EnemyTurn;
+				toyCamera.state = ToyCamera.State.FollowEnemies;
+			}
 			if ( Input.GetButtonDown( "Select" ) )
 			{
 				state = State.SelectingToy;
@@ -150,7 +156,7 @@ public class ToyManager : MonoBehaviour
 			}
 			else
 			{
-				toys[selectedToyIndex].WindUp();
+				//toys[selectedToyIndex].WindUp();
 
 				if ( left && !lastLeft )
 				{
@@ -213,5 +219,16 @@ public class ToyManager : MonoBehaviour
 	public void ResetSelection()
 	{
 		SelectToy( selectedToyIndex );
+	}
+
+	public void EndEnemyTurn()
+	{
+		state = State.ZoomedOut;
+		toyCamera.state = ToyCamera.State.ZoomedOut;
+
+		foreach( Toy toy in toys )
+		{
+			toy.knob.power = 1;
+		}
 	}
 }

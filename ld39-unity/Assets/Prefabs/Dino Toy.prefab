@@ -415,6 +415,21 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &1895723277568420
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4853221870415148}
+  m_Layer: 0
+  m_Name: enemy follow target
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &1896957205179080
 GameObject:
   m_ObjectHideFlags: 0
@@ -470,6 +485,7 @@ Transform:
   - {fileID: 4864800944936118}
   - {fileID: 4939844372071802}
   - {fileID: 4896367597893124}
+  - {fileID: 4853221870415148}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -723,6 +739,19 @@ Transform:
   m_Father: {fileID: 4667876789391548}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4853221870415148
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1895723277568420}
+  m_LocalRotation: {x: 0.48852712, y: -0.11703766, z: 0.066320576, w: 0.8621166}
+  m_LocalPosition: {x: 3.43, y: 19.91, z: -10.95}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4202288695767882}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 59.077003, y: -15.462001, z: 0}
 --- !u!4 &4864800944936118
 Transform:
   m_ObjectHideFlags: 1
@@ -985,6 +1014,7 @@ MonoBehaviour:
   controlledLookTarget: {fileID: 4551601329216306}
   selectedCameraTarget: {fileID: 4490020986363312}
   selectedLookTarget: {fileID: 4726956559943148}
+  enemyFollowTarget: {fileID: 4853221870415148}
   isNPC: 0
   npcHorizontal: 0
   npcVertical: 0

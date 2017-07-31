@@ -23,6 +23,7 @@ public class Toy : MonoBehaviour, IHittable
 	public Transform controlledLookTarget;
 	public Transform selectedCameraTarget;
 	public Transform selectedLookTarget;
+	public Transform enemyFollowTarget;
 
 	// non player character options
 	public bool isNPC;
@@ -149,7 +150,22 @@ public class Toy : MonoBehaviour, IHittable
 
 					float distanceMoved = Vector3.Distance( initialPosition, newPosition );
 
+					// always drain some amount even if the enemy gets stuck
+					if ( isNPC && !npcAttacking )
+					{
+						//Debug.Log( distanceMoved / Time.deltaTime );
+
+						float slowestDrainSpeed = 3f;
+						if ( distanceMoved / Time.deltaTime < slowestDrainSpeed )
+						{
+							//Debug.Log( "Slow Drain" );
+							distanceMoved = slowestDrainSpeed * Time.deltaTime;
+						}
+					}
+
 					knob.power -= distanceMoved / moveDistancePerTurn;
+
+
 
 					if ( !isNPC )
 					{
