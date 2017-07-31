@@ -5,8 +5,10 @@ using UnityEngine;
 public class Knob : MonoBehaviour 
 {
 	public GameObject modelObject;
+	public AudioSource windAudio;
 
 	private float _power;
+	private float lastPower;
 
 	public float power
 	{
@@ -37,5 +39,6 @@ public class Knob : MonoBehaviour
 		float maxAngle = 315;
 		float currentAngle = maxAngle * _power;
 		modelObject.transform.localEulerAngles = new Vector3( 0, currentAngle, 0 );
+
 	}
 }

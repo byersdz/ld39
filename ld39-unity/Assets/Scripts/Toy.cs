@@ -155,7 +155,7 @@ public class Toy : MonoBehaviour, IHittable
 					{
 						//Debug.Log( distanceMoved / Time.deltaTime );
 
-						float slowestDrainSpeed = 3f;
+						float slowestDrainSpeed = 5f;
 						if ( distanceMoved / Time.deltaTime < slowestDrainSpeed )
 						{
 							//Debug.Log( "Slow Drain" );
@@ -215,6 +215,13 @@ public class Toy : MonoBehaviour, IHittable
 		{
 			modelAnimator.SetFloat( "speed", 0 );
 			modelAnimator.SetBool( "isAttacking", false );
+
+			// always apply gravity
+			if ( !isDead )
+			{
+				Vector3 moveAmount = new Vector3( 0, verticalSpeed, 0 );
+				controller.Move( moveAmount * Time.deltaTime );
+			}
 		}
 	}
 
@@ -250,7 +257,7 @@ public class Toy : MonoBehaviour, IHittable
 		difference.y = 0;
 		Vector3 moveDirection = difference.normalized;
 
-		controller.Move( moveDirection * Time.deltaTime );
+		controller.Move( moveDirection * Time.deltaTime * 2 );
 
 	}
 
@@ -264,6 +271,18 @@ public class Toy : MonoBehaviour, IHittable
 		{
 			ToyManager.sharedInstance.toys.Remove( this );
 			ToyManager.sharedInstance.ResetSelection();
+		}
+	}
+
+	void OnTriggerEnter( Collider other )
+	{
+		if ( other.gameObject.CompareTag( "kill" ) )
+		{
+			if ( !isDead )
+			{
+				deathSequence.BeginDeathSequence();
+				isDead = true;
+			}
 		}
 	}
 

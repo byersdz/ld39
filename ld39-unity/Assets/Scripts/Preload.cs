@@ -9,6 +9,7 @@ public class Preload : MonoBehaviour
 	// Use this for initialization
 	void Start () 
 	{
+		Cursor.lockState = CursorLockMode.Locked;
 		SceneManager.LoadScene( "title" );
 	}
 	

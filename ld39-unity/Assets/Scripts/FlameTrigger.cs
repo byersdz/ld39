@@ -26,8 +26,11 @@ public class FlameTrigger : MonoBehaviour
 
 	void OnTriggerExit( Collider other )
 	{
-		if ( !enclosedObjects.Contains( other.gameObject ) )
+		//Debug.Log( "Exit?" );
+
+		if ( enclosedObjects.Contains( other.gameObject ) )
 		{
+			//Debug.Log( "TRIGGER EXIT" );
 			enclosedObjects.Remove( other.gameObject );
 		}
 

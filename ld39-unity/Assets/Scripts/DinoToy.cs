@@ -41,7 +41,15 @@ public class DinoToy : Toy
 					if ( hittable != null )
 					{
 						HitInfo hitInfo = new HitInfo();
-						hitInfo.damage = 1.5f * Time.deltaTime;
+
+						if ( isNPC )
+						{
+							hitInfo.damage = 1.5f * Time.deltaTime;
+						}
+						else
+						{
+							hitInfo.damage = 2.0f * Time.deltaTime;
+						}
 						hitInfo.origin = transform.position;
 
 						hittable.Hit( hitInfo );
@@ -68,7 +76,7 @@ public class DinoToy : Toy
 
 */
 
-			knob.power -= 0.25f * Time.deltaTime;
+			knob.power -= 0.125f * Time.deltaTime;
 
 			if ( !isNPC )
 			{

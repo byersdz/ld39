@@ -39,6 +39,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4902458151649586}
   - component: {fileID: 114545029949873686}
+  - component: {fileID: 114090160329808056}
   m_Layer: 0
   m_Name: Basic Tile
   m_TagString: Untagged
@@ -172,6 +173,23 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+--- !u!114 &114090160329808056
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1223383900502096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d403db347a9b846a1b37b1ea0a818091, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  colors:
+  - {r: 0.21677007, g: 0.38235295, b: 0.21085641, a: 0}
+  - {r: 0.1301903, g: 0.31617647, b: 0.1545609, a: 0}
+  - {r: 0.11397058, g: 0.22794116, b: 0.119472615, a: 0}
+  - {r: 0.17422216, g: 0.25735295, b: 0.13435337, a: 0}
+  myRenderer: {fileID: 23699266301370170}
 --- !u!114 &114545029949873686
 MonoBehaviour:
   m_ObjectHideFlags: 1

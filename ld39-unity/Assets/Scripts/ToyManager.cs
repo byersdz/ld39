@@ -4,13 +4,18 @@ using UnityEngine;
 
 public class ToyManager : MonoBehaviour 
 {
+	public TutorialPanel zoomOutTut;
+	public TutorialPanel zoomInTut;
+	public TutorialPanel moveTut;
+	public TutorialPanel enemyTut;
+
 	public List<Toy> toys;
 
 	public ToyCamera toyCamera;
 
 	public State state;
 
-	private int selectedToyIndex = 0;
+	public int selectedToyIndex = 0;
 
 	private bool left = false;
 	private bool lastLeft = false;
@@ -80,8 +85,50 @@ public class ToyManager : MonoBehaviour
 			toy.isPaused = false;
 		}
 
+		if ( cachedStateFromDeath == State.ControllingToy )
+		{
+			state = State.SelectingToy;
+			toyCamera.state = ToyCamera.State.ToyIsSelected;
+		}
+
+		SelectToy( selectedToyIndex );
+
 	}
-	
+
+	void LateUpdate()
+	{
+		if ( state == State.EnemyTurn )
+		{
+			zoomOutTut.isOn = false;
+			zoomInTut.isOn = false;
+			moveTut.isOn = false;
+			enemyTut.isOn = true;
+		}
+		else if ( state == State.ZoomedOut )
+		{
+			zoomOutTut.isOn = true;
+			zoomInTut.isOn = false;
+			moveTut.isOn = false;
+			enemyTut.isOn = false;
+		}
+		else if ( state == State.SelectingToy )
+		{
+			zoomOutTut.isOn = false;
+			zoomInTut.isOn = true;
+			moveTut.isOn = false;
+			enemyTut.isOn = false;
+		}
+		else if ( state == State.ControllingToy )
+		{
+			zoomOutTut.isOn = false;
+			zoomInTut.isOn = false;
+			moveTut.isOn = true;
+			enemyTut.isOn = false;
+		}
+
+
+	}
+
 	// Update is called once per frame
 	void Update () 
 	{
