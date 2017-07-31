@@ -5,4 +5,5 @@ using UnityEngine;
 public struct HitInfo 
 {
 	public float damage;
+	public Vector3 origin;
 }

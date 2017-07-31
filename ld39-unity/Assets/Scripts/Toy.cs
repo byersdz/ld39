@@ -245,6 +245,13 @@ public class Toy : MonoBehaviour, IHittable
 	public void Hit( HitInfo theHit )
 	{
 		healthBar.damage += theHit.damage;
+
+		Vector3 difference = transform.position - theHit.origin;
+		difference.y = 0;
+		Vector3 moveDirection = difference.normalized;
+
+		controller.Move( moveDirection * Time.deltaTime );
+
 	}
 
 	public void RemoveFromGame()

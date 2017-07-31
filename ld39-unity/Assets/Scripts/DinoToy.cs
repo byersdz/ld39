@@ -11,6 +11,8 @@ public class DinoToy : Toy
 	public Material enemyMaterial;
 	public Renderer modelRenderer;
 
+	public FlameTrigger flameTrigger;
+
 	private bool isBreathing = false;
 	private bool lastIsBreathing = false;
 
@@ -30,6 +32,24 @@ public class DinoToy : Toy
 			Debug.DrawRay( mouthOrigin.position, endPosition );
 			isBreathing = true;
 
+			foreach ( GameObject enclosedObject in flameTrigger.enclosedObjects )
+			{
+				if ( enclosedObject != null )
+				{
+					IHittable hittable = enclosedObject.GetComponent<IHittable>();
+
+					if ( hittable != null )
+					{
+						HitInfo hitInfo = new HitInfo();
+						hitInfo.damage = 1.5f * Time.deltaTime;
+						hitInfo.origin = transform.position;
+
+						hittable.Hit( hitInfo );
+					}
+				}
+			}
+
+			/*
 			Ray ray = new Ray( mouthOrigin.position, endPosition );
 			RaycastHit hit;
 
@@ -45,6 +65,8 @@ public class DinoToy : Toy
 					hittable.Hit( hitInfo );
 				}
 			}
+
+*/
 
 			knob.power -= 0.25f * Time.deltaTime;
 
